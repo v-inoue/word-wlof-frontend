@@ -1,0 +1,125 @@
+import { useEffect, useState,useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Box,
+  Text,
+  Button,
+  VStack,
+  Heading,
+  Spinner
+} from '@chakra-ui/react'
+
+function Game() {
+  const didFetch = useRef(false)
+  const [players, setPlayers] = useState<string[]>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [step, setStep] = useState<'loading' | 'confirmName' | 'showWord' | 'done'>('loading')
+  const [wordMap, setWordMap] = useState<Record<string, string>>({})
+  const [themes, setThemes] = useState<[string, string]>(['', ''])
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (didFetch.current) return
+    didFetch.current = true
+    // プレイヤー取得
+    const data = localStorage.getItem('players')
+    if (!data) {
+      navigate('/')
+      return
+    }
+
+    const playerList = JSON.parse(data) as string[]
+
+    // お題をサーバから取得
+    // お題をサーバから取得
+fetch('http://localhost:8012/generate-word-pair')
+  .then(res => res.json())
+  .then(json => {
+    const citizen = json.citizen
+    const werewolf = json.werewolf
+    setThemes([citizen, werewolf])
+
+    // ← この部分を追加（Result.tsx で読み取るために保存）
+    localStorage.setItem('themeData', JSON.stringify({
+  citizen: {
+    word: citizen,
+    explanation: json['citizen-explanation']
+  },
+  werewolf: {
+    word: werewolf,
+    explanation: json['werewolf-explanation']
+  }
+}))
+
+    // ランダムに1人をウルフに設定
+    const wolfIndex = Math.floor(Math.random() * playerList.length)
+    const wordAssignments: Record<string, string> = {}
+
+    playerList.forEach((player, i) => {
+      wordAssignments[player] = i === wolfIndex ? werewolf : citizen
+    })
+
+    setWordMap(wordAssignments)
+    setPlayers(playerList)
+    setStep('confirmName')
+  })
+  }, [])
+
+  const currentPlayer = players[currentIndex]
+  const currentWord = wordMap[currentPlayer]
+
+  const handleNext = () => {
+    if (currentIndex + 1 < players.length) {
+      setCurrentIndex((prev) => prev + 1)
+      setStep('confirmName')
+    } else {
+      setStep('done')
+    }
+  }
+
+  return (
+    <Box h="100vh" display="flex" justifyContent="center" alignItems="center" px={4}>
+      <VStack>
+        
+
+        {step === 'loading' &&
+      <>
+            <Heading>お題生成中...</Heading>
+            <Spinner size="xl" />
+          </>}
+
+        {step === 'confirmName' && (
+          <>
+            <Heading>お題確認</Heading> 
+            <Text fontSize="xl">{currentPlayer}さんですか？</Text>
+            <Button colorScheme="blue" onClick={() => setStep('showWord')}>
+              はい
+            </Button>
+          </>
+        )}
+
+        {step === 'showWord' && (
+          <>
+            <Text fontSize="2xl" fontWeight="bold">
+              お題：{currentWord}
+            </Text>
+            <Button colorScheme="green" onClick={handleNext}>
+              確認しました
+            </Button>
+          </>
+        )}
+
+        {step === 'done' && (
+          <>
+            <Text fontSize="xl">全員の確認が終わりました！</Text>
+            <Button colorScheme="teal" onClick={() => navigate('/play')}>
+              ゲーム開始！
+            </Button>
+          </>
+        )}
+      </VStack>
+    </Box>
+  )
+}
+
+export default Game
