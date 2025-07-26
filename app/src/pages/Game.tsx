@@ -36,8 +36,8 @@ fetch('http://localhost:8012/generate-word-pair')
   .then(res => res.json())
   .then(json => {
     const citizen = json.citizen
-    const werewolf = json.werewolf
-    // setThemes([citizen, werewolf])
+    const werewlof = json.werewlof
+    // setThemes([citizen, werewlof])
 
     // ← この部分を追加（Result.tsx で読み取るために保存）
     localStorage.setItem('themeData', JSON.stringify({
@@ -45,18 +45,18 @@ fetch('http://localhost:8012/generate-word-pair')
     word: citizen,
     explanation: json['citizen-explanation']
   },
-  werewolf: {
-    word: werewolf,
-    explanation: json['werewolf-explanation']
+  werewlof: {
+    word: werewlof,
+    explanation: json['werewlof-explanation']
   }
 }))
 
     // ランダムに1人をウルフに設定
-    const wolfIndex = Math.floor(Math.random() * playerList.length)
+    const wlofIndex = Math.floor(Math.random() * playerList.length)
     const wordAssignments: Record<string, string> = {}
 
     playerList.forEach((player, i) => {
-      wordAssignments[player] = i === wolfIndex ? werewolf : citizen
+      wordAssignments[player] = i === wlofIndex ? werewlof : citizen
     })
 
     setWordMap(wordAssignments)

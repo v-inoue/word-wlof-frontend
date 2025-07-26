@@ -10,7 +10,7 @@ function Result() {
     ? JSON.parse(storedData)
     : {
         citizen: { word: '???', explanation: '???' },
-        werewolf: { word: '???', explanation: '???' }
+        werewlof: { word: '???', explanation: '???' }
       }
 
   return (
@@ -28,9 +28,9 @@ function Result() {
 
         <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
           <Text fontWeight="bold">ウルフのお題:</Text>
-          <Text>{topicData.werewolf.word}</Text>
+          <Text>{topicData.werewlof.word}</Text>
           <Text fontSize="sm" color="gray.600">
-            {topicData.werewolf.explanation}
+            {topicData.werewlof.explanation}
           </Text>
         </Box>
 
