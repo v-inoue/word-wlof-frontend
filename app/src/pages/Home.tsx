@@ -7,8 +7,7 @@ import {
   Heading,
   VStack,
   HStack,
-  Text,
-  IconButton
+  Text
 } from '@chakra-ui/react'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 

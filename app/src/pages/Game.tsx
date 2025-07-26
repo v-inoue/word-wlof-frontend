@@ -15,7 +15,7 @@ function Game() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [step, setStep] = useState<'loading' | 'confirmName' | 'showWord' | 'done'>('loading')
   const [wordMap, setWordMap] = useState<Record<string, string>>({})
-  const [themes, setThemes] = useState<[string, string]>(['', ''])
+  // const [themes, setThemes] = useState<[string, string]>(['', ''])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,7 +37,7 @@ fetch('http://localhost:8012/generate-word-pair')
   .then(json => {
     const citizen = json.citizen
     const werewolf = json.werewolf
-    setThemes([citizen, werewolf])
+    // setThemes([citizen, werewolf])
 
     // ← この部分を追加（Result.tsx で読み取るために保存）
     localStorage.setItem('themeData', JSON.stringify({
