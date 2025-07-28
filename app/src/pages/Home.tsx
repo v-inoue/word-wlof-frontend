@@ -7,14 +7,23 @@ import {
   Heading,
   VStack,
   HStack,
-  Text
+  Text,
+  SegmentGroup
 } from '@chakra-ui/react'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 
 function Home() {
-  const [players, setPlayers] = useState(['', '', '']) // 初期3人
+  const [players, setPlayers] = useState(['', '', '']) // 初期3人 
   const navigate = useNavigate()
 
+  const [withExplanation, setWithExplanation] = useState<string|null>(
+  () => localStorage.getItem('withExplanation') ?? '解説あり'
+)
+
+  const saveExplanation = (withExplanation: string|null) => {
+    setWithExplanation(withExplanation)
+    localStorage.setItem('withExplanation', withExplanation || '解説あり')
+  }
   const handleChange = (index: number, value: string) => {
     const newPlayers = [...players]
     newPlayers[index] = value
@@ -43,6 +52,10 @@ function Home() {
     <Box h="100vh" display="flex" justifyContent="center" alignItems="center" px={4}>
       <VStack>
         <Heading>エンジニアワードウルフ</Heading>
+    <SegmentGroup.Root value={withExplanation} onValueChange={(e) => saveExplanation(e.value)}>
+      <SegmentGroup.Indicator />
+      <SegmentGroup.Items items={["解説あり", "解説なし"]} />
+    </SegmentGroup.Root>
 
         {players.map((name, idx) => (
           <HStack key={idx} w="100%">

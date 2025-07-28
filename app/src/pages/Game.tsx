@@ -15,8 +15,10 @@ function Game() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [step, setStep] = useState<'loading' | 'confirmName' | 'showWord' | 'done'>('loading')
   const [wordMap, setWordMap] = useState<Record<string, string>>({})
-  // const [themes, setThemes] = useState<[string, string]>(['', ''])
+  const withExplanation = localStorage.getItem('withExplanation') || '解説あり'
   const navigate = useNavigate()
+  const [citizenExplanation, setCitizenExplanation] = useState<string>('市民のお題の解説がありません')
+  const [werewlofExplanation, setWerewlofExplanation] = useState<string>('ウルフのお題の解説がありません')
 
   useEffect(() => {
     if (didFetch.current) return
@@ -31,15 +33,15 @@ function Game() {
     const playerList = JSON.parse(data) as string[]
 
     // お題をサーバから取得
-    // お題をサーバから取得
 fetch('http://localhost:8012/generate-word-pair')
   .then(res => res.json())
   .then(json => {
     const citizen = json.citizen
     const werewlof = json.werewlof
-    // setThemes([citizen, werewlof])
+    setCitizenExplanation(json['citizen-explanation'] || '市民のお題の解説がありません')
+    setWerewlofExplanation(json['werewlof-explanation'] || 'ウルフのお題の解説がありません')
 
-    // ← この部分を追加（Result.tsx で読み取るために保存）
+    // setThemes([citizen, werewlof])
     localStorage.setItem('themeData', JSON.stringify({
   citizen: {
     word: citizen,
@@ -103,6 +105,18 @@ fetch('http://localhost:8012/generate-word-pair')
             <Text fontSize="2xl" fontWeight="bold">
               お題：{currentWord}
             </Text>
+           
+            {withExplanation === '解説あり' && (
+              <>
+                <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
+                  <Text fontWeight="bold">解説:</Text>
+                  <Text fontSize="sm" color="gray.600">
+                    {currentPlayer === '市民' ? citizenExplanation : werewlofExplanation}
+                  </Text>
+                </Box>
+              </>
+            )}
+           
             <Button colorScheme="green" onClick={handleNext}>
               確認しました
             </Button>
