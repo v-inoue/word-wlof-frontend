@@ -40,9 +40,8 @@ fetch('http://localhost:8012/generate-word-pair')
     const werewlof = json.werewlof
     setCitizenExplanation(json['citizen-explanation'] || '市民のお題の解説がありません')
     setWerewlofExplanation(json['werewlof-explanation'] || 'ウルフのお題の解説がありません')
-
-    // setThemes([citizen, werewlof])
     setCitizenWord(citizen)
+
     localStorage.setItem('themeData', JSON.stringify({
   citizen: {
     word: citizen,
@@ -70,6 +69,8 @@ fetch('http://localhost:8012/generate-word-pair')
 
   const currentPlayer = players[currentIndex]
   const currentWord = wordMap[currentPlayer]
+  console.log('currentWord', currentWord) 
+  console.log('citizenWord', citizenWord)
 
   const handleNext = () => {
     if (currentIndex + 1 < players.length) {
@@ -112,8 +113,10 @@ fetch('http://localhost:8012/generate-word-pair')
                 <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
                   <Text fontWeight="bold">解説:</Text>
                   <Text fontSize="sm" color="gray.600">
+                    
                     {currentWord === citizenWord ? citizenExplanation : werewlofExplanation}
                   </Text>
+                 
                 </Box>
               </>
             )}
