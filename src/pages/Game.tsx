@@ -19,7 +19,7 @@ function Game() {
   const navigate = useNavigate()
   const [citizenExplanation, setCitizenExplanation] = useState<string>('市民のお題の解説がありません')
   const [werewlofExplanation, setWerewlofExplanation] = useState<string>('ウルフのお題の解説がありません')
-
+  const [citizenWord, setCitizenWord] = useState<string>('市民のお題がありません')
   useEffect(() => {
     if (didFetch.current) return
     didFetch.current = true
@@ -42,6 +42,7 @@ fetch('http://localhost:8012/generate-word-pair')
     setWerewlofExplanation(json['werewlof-explanation'] || 'ウルフのお題の解説がありません')
 
     // setThemes([citizen, werewlof])
+    setCitizenWord(citizen)
     localStorage.setItem('themeData', JSON.stringify({
   citizen: {
     word: citizen,
@@ -111,7 +112,7 @@ fetch('http://localhost:8012/generate-word-pair')
                 <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
                   <Text fontWeight="bold">解説:</Text>
                   <Text fontSize="sm" color="gray.600">
-                    {currentPlayer === '市民' ? citizenExplanation : werewlofExplanation}
+                    {currentWord === citizenWord ? citizenExplanation : werewlofExplanation}
                   </Text>
                 </Box>
               </>
