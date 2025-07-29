@@ -69,8 +69,7 @@ fetch('http://localhost:8012/generate-word-pair')
 
   const currentPlayer = players[currentIndex]
   const currentWord = wordMap[currentPlayer]
-  console.log('currentWord', currentWord) 
-  console.log('citizenWord', citizenWord)
+
 
   const handleNext = () => {
     if (currentIndex + 1 < players.length) {
