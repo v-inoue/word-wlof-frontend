@@ -42,6 +42,11 @@ function Home() {
 
   const handleStart = () => {
     const trimmed = players.map(p => p.trim())
+    const hasDuplicates = new Set(trimmed).size !== trimmed.length
+    if (hasDuplicates) {
+      alert('プレイヤー名に重複があります。')
+      return
+    }
     if (trimmed.every(name => name !== '')) {
       localStorage.setItem('players', JSON.stringify(trimmed))
       navigate('/game')
