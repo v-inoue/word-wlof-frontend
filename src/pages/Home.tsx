@@ -8,13 +8,40 @@ import {
   VStack,
   HStack,
   Text,
-  SegmentGroup
+  SegmentGroup,
+  Slider
 } from '@chakra-ui/react'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 
 function Home() {
   const [players, setPlayers] = useState(['', '', '']) // 初期3人 
   const navigate = useNavigate()
+
+const [minLevel, setMinLevel] = useState<number>(() => {
+  const saved = localStorage.getItem('minLevel')
+  const parsed = Number(saved)
+  return isNaN(parsed) ? 1 : parsed
+})
+
+const [maxLevel, setMaxLevel] = useState<number>(() => {
+  const saved = localStorage.getItem('maxLevel')
+  const parsed = Number(saved)
+  return isNaN(parsed) ? 5 : parsed
+})
+const marks = [
+  { value: 1, label: "1" },
+  { value: 2, label: "2" },
+  { value: 3, label: "3" },
+  { value: 4, label: "4" },
+  { value: 5, label: "5" },
+ 
+]
+const handleLevelChange = (value: number,value2: number) => {
+  setMinLevel(value)
+  setMaxLevel(value2)
+  localStorage.setItem('minLevel', String(value))
+  localStorage.setItem('maxLevel', String(value2))
+}
 
   const [withExplanation, setWithExplanation] = useState<string|null>(
   () => localStorage.getItem('withExplanation') ?? '解説あり'
@@ -54,9 +81,27 @@ function Home() {
   }
 
   return (
-    <Box h="100vh" display="flex" justifyContent="center" alignItems="center" px={4}>
+    <Box h="100vh" display="flex" justifyContent="center" alignItems="stretch" px={4} >
       <VStack>
         <Heading>エンジニアワードウルフ</Heading>
+        {minLevel !== maxLevel && (
+           <Text fontSize="md" mb={1}>出題レベル: {minLevel}~{maxLevel}</Text>
+         )}
+         {minLevel === maxLevel && (
+           <Text fontSize="md" mb={1}>出題レベル: {minLevel}</Text>
+         )}
+       <Slider.Root width="150px"value={[minLevel, maxLevel]} step={1} min={1} max={5} 
+       onValueChange={(e) => handleLevelChange(e.value[0], e.value[1])} 
+       colorPalette="gray.500" size="sm">
+          <Slider.Control>
+            <Slider.Track>
+              <Slider.Range />
+            </Slider.Track>
+            <Slider.Thumbs  boxSize={4} borderColor="gray.500"/>
+            <Slider.Marks marks={marks} />
+          </Slider.Control>
+        </Slider.Root>
+
     <SegmentGroup.Root value={withExplanation} onValueChange={(e) => saveExplanation(e.value)}>
       <SegmentGroup.Indicator />
       <SegmentGroup.Items items={["解説あり", "解説なし"]} />
