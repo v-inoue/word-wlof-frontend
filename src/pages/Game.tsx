@@ -9,6 +9,7 @@ import {
   Spinner
 } from '@chakra-ui/react'
 
+
 function Game() {
   const didFetch = useRef(false)
   const [players, setPlayers] = useState<string[]>([])
@@ -30,6 +31,14 @@ function Game() {
     const parsed = Number(saved)
     return isNaN(parsed) ? 5 : parsed
   })
+  const domain = useState<string[]>(() => {
+    const saved = localStorage.getItem('selectedDomains')
+    if (saved) {
+      return JSON.parse(saved)
+    }
+    return ["AI", "Web", "ソフトウェア工学", "プログラミング言語", "データ構造とアルゴリズム", "セキュリティ", "データベース", "ネットワーク", "組み込み"]
+  })[0]
+
   useEffect(() => {
     if (didFetch.current) return
     didFetch.current = true
@@ -50,7 +59,8 @@ fetch('http://localhost:8012/generate-word-pair', {
   },
   body: JSON.stringify({
     minLevel,
-    maxLevel
+    maxLevel,
+    domain
   })
 })
   .then(res => res.json())
