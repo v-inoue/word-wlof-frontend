@@ -20,6 +20,16 @@ function Game() {
   const [citizenExplanation, setCitizenExplanation] = useState<string>('市民のお題の解説がありません')
   const [werewlofExplanation, setWerewlofExplanation] = useState<string>('ウルフのお題の解説がありません')
   const [citizenWord, setCitizenWord] = useState<string>('市民のお題がありません')
+  const [minLevel] = useState<number>(() => {
+    const saved = localStorage.getItem('minLevel')
+    const parsed = Number(saved)
+    return isNaN(parsed) ? 1 : parsed
+  })
+  const [maxLevel] = useState<number>(() => {
+    const saved = localStorage.getItem('maxLevel')
+    const parsed = Number(saved)
+    return isNaN(parsed) ? 5 : parsed
+  })
   useEffect(() => {
     if (didFetch.current) return
     didFetch.current = true
@@ -32,12 +42,23 @@ function Game() {
 
     const playerList = JSON.parse(data) as string[]
 
-    // お題をサーバから取得
-fetch('http://localhost:8012/generate-word-pair')
+    // minLevelとmaxLevelを送信しお題をサーバから取得
+fetch('http://localhost:8012/generate-word-pair', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    minLevel,
+    maxLevel
+  })
+})
   .then(res => res.json())
   .then(json => {
     const citizen = json.citizen
     const werewlof = json.werewlof
+    const level = json.level
+    const domain = json.domain
     setCitizenExplanation(json['citizen-explanation'] || '市民のお題の解説がありません')
     setWerewlofExplanation(json['werewlof-explanation'] || 'ウルフのお題の解説がありません')
     setCitizenWord(citizen)
@@ -50,7 +71,9 @@ fetch('http://localhost:8012/generate-word-pair')
   werewlof: {
     word: werewlof,
     explanation: json['werewlof-explanation']
-  }
+  },
+  level: level,
+  domain: domain
 }))
 
     // ランダムに1人をウルフに設定

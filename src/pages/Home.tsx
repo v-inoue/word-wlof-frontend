@@ -92,7 +92,7 @@ const handleLevelChange = (value: number,value2: number) => {
          )}
        <Slider.Root width="150px"value={[minLevel, maxLevel]} step={1} min={1} max={5} 
        onValueChange={(e) => handleLevelChange(e.value[0], e.value[1])} 
-       colorPalette="gray.500" size="sm">
+       colorPalette="gray" size="sm">
           <Slider.Control>
             <Slider.Track>
               <Slider.Range />

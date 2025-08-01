@@ -17,8 +17,10 @@ function Result() {
     <Box h="100vh" display="flex" justifyContent="center" alignItems="center">
       <VStack>
         <Heading>結果発表</Heading>
+        <Text>分野: {topicData.domain}</Text>
+        <Text>お題のレベル: {topicData.level}</Text>
 
-        <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
+        <Box p={4} borderWidth="1px" borderRadius="lg" w="400px">
           <Text fontWeight="bold">市民のお題:</Text>
           <Text>{topicData.citizen.word}</Text>
           <Text fontSize="sm" color="gray.600">
@@ -26,7 +28,7 @@ function Result() {
           </Text>
         </Box>
 
-        <Box p={4} borderWidth="1px" borderRadius="lg" w="300px">
+        <Box p={4} borderWidth="1px" borderRadius="lg" w="400px">
           <Text fontWeight="bold">ウルフのお題:</Text>
           <Text>{topicData.werewlof.word}</Text>
           <Text fontSize="sm" color="gray.600">
