@@ -17,17 +17,8 @@ function Home() {
   const [players, setPlayers] = useState(['', '', '']) // 初期3人 
   const navigate = useNavigate()
 
-const [minLevel, setMinLevel] = useState<number>(() => {
-  const saved = localStorage.getItem('minLevel')
-  const parsed = Number(saved)
-  return isNaN(parsed) ? 1 : parsed
-})
-
-const [maxLevel, setMaxLevel] = useState<number>(() => {
-  const saved = localStorage.getItem('maxLevel')
-  const parsed = Number(saved)
-  return isNaN(parsed) ? 5 : parsed
-})
+const [minLevel, setMinLevel] = useState<number>(1)
+const [maxLevel, setMaxLevel] = useState<number>(5)
 const marks = [
   { value: 1, label: "1" },
   { value: 2, label: "2" },
