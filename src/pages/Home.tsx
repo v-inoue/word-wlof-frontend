@@ -121,7 +121,7 @@ function Home() {
             <Slider.Marks marks={marks} />
           </Slider.Control>
         </Slider.Root>
-
+        
         <Accordion.Root collapsible size="sm">
           <Accordion.Item value="domain">
             <h2>
@@ -151,7 +151,7 @@ function Home() {
             </Accordion.ItemContent>
           </Accordion.Item>
         </Accordion.Root>
-
+        
         <SegmentGroup.Root value={withExplanation} onValueChange={(e) => saveExplanation(e.value)}>
           <SegmentGroup.Indicator />
           <SegmentGroup.Items items={["解説あり", "解説なし"]} />
