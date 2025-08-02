@@ -76,6 +76,10 @@ function Home() {
   const handleStart = () => {
     const trimmed = players.map(p => p.trim())
     const hasDuplicates = new Set(trimmed).size !== trimmed.length
+    if (selectedDomains.length === 0) {
+      alert('分野を1つ以上選択してください。')
+      return
+    }
     if (hasDuplicates) {
       alert('プレイヤー名に重複があります。')
       return
