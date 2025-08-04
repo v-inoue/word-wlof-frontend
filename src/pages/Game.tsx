@@ -9,8 +9,24 @@ import {
   Spinner
 } from '@chakra-ui/react'
 
+function getRandomIntInRange(min: number, max: number): number {
+  // min以上 max以下 の整数を返す
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function buildWordQueryUrl(categoryId: number, minLevel: number, maxLevel: number): string {
+  const baseUrl = "https://api.it-word-wolf.nrysk.dev/words/random";
+
+  const level = getRandomIntInRange(minLevel, maxLevel);
+  const params = new URLSearchParams({
+    category_id: categoryId.toString(),
+    difficulty_level: level.toString()
+  });
+
+  return `${baseUrl}?${params.toString()}`;
+}
 
 function Game() {
+
   const didFetch = useRef(false)
   const [players, setPlayers] = useState<string[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -21,6 +37,13 @@ function Game() {
   const [citizenExplanation, setCitizenExplanation] = useState<string>('市民のお題の解説がありません')
   const [werewlofExplanation, setWerewlofExplanation] = useState<string>('ウルフのお題の解説がありません')
   const [citizenWord, setCitizenWord] = useState<string>('市民のお題がありません')
+  const [citizenNumber] = useState<number>(() => getRandomIntInRange(0, 3));
+  const [werewlofNumber, setWerewlofNumber] = useState<number>(0);
+
+useEffect(() => {
+  const newWerewolf = (citizenNumber + getRandomIntInRange(1, 3)) % 4;
+  setWerewlofNumber(newWerewolf);
+}, [citizenNumber]);
   const [minLevel] = useState<number>(() => {
     const saved = localStorage.getItem('minLevel')
     const parsed = Number(saved)
@@ -31,19 +54,28 @@ function Game() {
     const parsed = Number(saved)
     return isNaN(parsed) ? 5 : parsed
   })
-  const domain = useState<string[]>(() => {
+  type Category = {
+  id: number;
+  name: string;
+};
+  const categories = useState<Category[]>(() => {
     const saved = localStorage.getItem('selectedDomains')
     if (saved) {
       return JSON.parse(saved)
     }
-    return ["AI", "Web", "ソフトウェア工学", "プログラミング言語", "データ構造とアルゴリズム", "セキュリティ", "データベース", "ネットワーク", "組み込み"]
+    return []
   })[0]
+
+  const randomDomain = categories[Math.floor(Math.random() * categories.length)];
+
+  
 
   useEffect(() => {
     if (didFetch.current) return
     didFetch.current = true
     // プレイヤー取得
     const data = localStorage.getItem('players')
+    const url = buildWordQueryUrl(randomDomain.id, minLevel, maxLevel)
     if (!data) {
       navigate('/')
       return
@@ -52,35 +84,31 @@ function Game() {
     const playerList = JSON.parse(data) as string[]
 
     // minLevelとmaxLevelを送信しお題をサーバから取得
-fetch('http://localhost:8012/generate-word-pair', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    minLevel,
-    maxLevel,
-    domain
-  })
+fetch(url, {
+  method: 'GET',
+
 })
+
   .then(res => res.json())
   .then(json => {
-    const citizen = json.citizen
-    const werewlof = json.werewlof
-    const level = json.level
-    const domain = json.domain
-    setCitizenExplanation(json['citizen-explanation'] || '市民のお題の解説がありません')
-    setWerewlofExplanation(json['werewlof-explanation'] || 'ウルフのお題の解説がありません')
+
+    const citizen =  json.words[citizenNumber].word
+    const werewlof = json.words[werewlofNumber].word
+    const domain = json.category
+    const level = json.difficulty
+    setCitizenExplanation(json.words[citizenNumber].explanation || '市民のお題の解説がありません')
+    setWerewlofExplanation(json.words[werewlofNumber].explanation || 'ウルフのお題の解説がありません')
     setCitizenWord(citizen)
+    console.log('json', json)
 
     localStorage.setItem('themeData', JSON.stringify({
   citizen: {
     word: citizen,
-    explanation: json['citizen-explanation']
+    explanation: json.words[citizenNumber].explanation || '市民のお題の解説がありません'
   },
   werewlof: {
     word: werewlof,
-    explanation: json['werewlof-explanation']
+    explanation: json.words[werewlofNumber].explanation || 'ウルフのお題の解説がありません'
   },
   level: level,
   domain: domain

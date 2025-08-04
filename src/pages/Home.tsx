@@ -39,13 +39,28 @@ function Home() {
   const [withExplanation, setWithExplanation] = useState<string | null>(
     () => localStorage.getItem('withExplanation') ?? '解説あり'
   )
+  type Category = {
+  id: number;
+  name: string;
+};
 
-  const domainList = ["AI", "Web", "ソフトウェア工学","プログラミング言語","データ構造とアルゴリズム","セキュリティ", "データベース", "ネットワーク","組み込み"]
-  const [selectedDomains, setSelectedDomains] = useState(domainList)
+  const categories: Category[] = [
+  { id: 1, name: "プログラミング言語" },
+  { id: 2, name: "データ構造とアルゴリズム" },
+  { id: 3, name: "ネットワーク" },
+  { id: 4, name: "データベース" },
+  { id: 5, name: "セキュリティ" },
+  { id: 6, name: "ソフトウェア工学" },
+  { id: 7, name: "ヒューマンインターフェース" },
+  { id: 8, name: "組み込みシステム" },
+  { id: 9, name: "データサイエンス" },
+  { id: 10, name: "コンピュータシステム" },
+];
+  const [selectedDomains, setSelectedDomains] = useState(categories)
 
-  const toggleDomain = (domain: string) => {
-  const updated = selectedDomains.includes(domain)
-    ? selectedDomains.filter(d => d !== domain)
+  const toggleDomain = (domain: Category) => {
+  const updated = selectedDomains.some(d => d.id === domain.id)
+    ? selectedDomains.filter(d => d.id !== domain.id)
     : [...selectedDomains, domain]
 
   setSelectedDomains(updated)
@@ -132,18 +147,18 @@ function Home() {
             </h2>
             <Accordion.ItemContent>
               <VStack align="start">
-                <For each={domainList}>
-                  {(domain) => (
+                <For each={categories}>
+                  {(category) => (
                     <Checkbox.Root
-                      key={domain}
+                      key={category.id}
                       defaultChecked
                       mt="2"
-                      value={domain}
-                      onCheckedChange={() => toggleDomain(domain)}
+                      value={category.name}
+                      onCheckedChange={() => toggleDomain(category)}
                     >
                       <Checkbox.HiddenInput />
                       <Checkbox.Control />
-                      <Checkbox.Label>{domain}</Checkbox.Label>
+                      <Checkbox.Label>{category.name}</Checkbox.Label>
                     </Checkbox.Root>
                   )}
                 </For>
