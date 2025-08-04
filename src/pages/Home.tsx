@@ -23,11 +23,11 @@ function Home() {
   const [minLevel, setMinLevel] = useState<number>(1)
   const [maxLevel, setMaxLevel] = useState<number>(5)
   const marks = [
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-    { value: 5, label: "5" },
+    { value: 1, label: "超初級" },
+    { value: 2, label: "初級" },
+    { value: 3, label: "中級" },
+    { value: 4, label: "上級" },
+    { value: 5, label: "超上級" },
   ]
   const handleLevelChange = (value: number, value2: number) => {
     setMinLevel(value)
@@ -114,12 +114,12 @@ function Home() {
       <VStack>
         <Heading>エンジニアワードウルフ</Heading>
         {minLevel !== maxLevel ? (
-          <Text fontSize="md" mb={1}>出題レベル: {minLevel}~{maxLevel}</Text>
+          <Text fontSize="md" mb={1}>出題レベル: {marks[minLevel - 1].label} ~ {marks[maxLevel - 1].label}</Text>
         ) : (
-          <Text fontSize="md" mb={1}>出題レベル: {minLevel}</Text>
+          <Text fontSize="md" mb={1}>出題レベル: {marks[minLevel - 1].label}</Text>
         )}
         <Slider.Root
-          width="150px"
+          width="200px"
           value={[minLevel, maxLevel]}
           step={1}
           min={1}
@@ -133,7 +133,7 @@ function Home() {
               <Slider.Range />
             </Slider.Track>
             <Slider.Thumbs boxSize={4} borderColor="gray.500" />
-            <Slider.Marks marks={marks} />
+            <Slider.Marks marks={marks} style={{ whiteSpace: 'nowrap' }} />
           </Slider.Control>
         </Slider.Root>
         
