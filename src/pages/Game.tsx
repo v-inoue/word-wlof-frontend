@@ -38,12 +38,9 @@ function Game() {
   const [werewlofExplanation, setWerewlofExplanation] = useState<string>('ウルフのお題の解説がありません')
   const [citizenWord, setCitizenWord] = useState<string>('市民のお題がありません')
   const [citizenNumber] = useState<number>(() => getRandomIntInRange(0, 3));
-  const [werewlofNumber, setWerewlofNumber] = useState<number>(0);
+  const [citizenEnglish, setCitizenEnglish] = useState<string>('市民のお題の英語がありません')
+  const [werewlofEnglish, setWerewlofEnglish] = useState<string>('ウルフのお題の英語がありません')
 
-useEffect(() => {
-  const newWerewolf = (citizenNumber + getRandomIntInRange(1, 3)) % 4;
-  setWerewlofNumber(newWerewolf);
-}, [citizenNumber]);
   const [minLevel] = useState<number>(() => {
     const saved = localStorage.getItem('minLevel')
     const parsed = Number(saved)
@@ -66,7 +63,8 @@ useEffect(() => {
     return []
   })[0]
 
-  const randomDomain = categories[Math.floor(Math.random() * categories.length)];
+
+  
 
   
 
@@ -74,6 +72,7 @@ useEffect(() => {
     if (didFetch.current) return
     didFetch.current = true
     // プレイヤー取得
+    const randomDomain = categories[Math.floor(Math.random() * categories.length)];
     const data = localStorage.getItem('players')
     const url = buildWordQueryUrl(randomDomain.id, minLevel, maxLevel)
     if (!data) {
@@ -84,6 +83,8 @@ useEffect(() => {
     const playerList = JSON.parse(data) as string[]
 
     // minLevelとmaxLevelを送信しお題をサーバから取得
+
+
 fetch(url, {
   method: 'GET',
 
@@ -91,24 +92,28 @@ fetch(url, {
 
   .then(res => res.json())
   .then(json => {
-
+    const werewlofNumber = (citizenNumber + getRandomIntInRange(1, 3)) % 4;
     const citizen =  json.words[citizenNumber].word
     const werewlof = json.words[werewlofNumber].word
     const domain = json.category
     const level = json.difficulty
+
     setCitizenExplanation(json.words[citizenNumber].explanation || '市民のお題の解説がありません')
     setWerewlofExplanation(json.words[werewlofNumber].explanation || 'ウルフのお題の解説がありません')
+    setCitizenEnglish(json.words[citizenNumber].english || '市民のお題の英語がありません')
+    setWerewlofEnglish(json.words[werewlofNumber].english || 'ウルフのお題の英語がありません')
     setCitizenWord(citizen)
-    console.log('json', json)
 
     localStorage.setItem('themeData', JSON.stringify({
   citizen: {
     word: citizen,
-    explanation: json.words[citizenNumber].explanation || '市民のお題の解説がありません'
+    explanation: json.words[citizenNumber].explanation || '市民のお題の解説がありません',
+    english: json.words[citizenNumber].english || '市民のお題の英語がありません'
   },
   werewlof: {
     word: werewlof,
-    explanation: json.words[werewlofNumber].explanation || 'ウルフのお題の解説がありません'
+    explanation: json.words[werewlofNumber].explanation || 'ウルフのお題の解説がありません',
+    english: json.words[werewlofNumber].english || 'ウルフのお題の英語がありません'
   },
   level: level,
   domain: domain
@@ -165,7 +170,7 @@ fetch(url, {
         {step === 'showWord' && (
           <>
             <Text fontSize="2xl" fontWeight="bold">
-              お題：{currentWord}
+              お題：{currentWord}（{currentWord === citizenWord ? citizenEnglish : werewlofEnglish}）
             </Text>
            
             {withExplanation === '解説あり' && (

@@ -22,7 +22,7 @@ function Result() {
 
         <Box p={4} borderWidth="1px" borderRadius="lg" w="400px">
           <Text fontWeight="bold">市民のお題:</Text>
-          <Text>{topicData.citizen.word}</Text>
+          <Text>{topicData.citizen.word}（{topicData.citizen.english}）</Text>
           <Text fontSize="sm" color="gray.600">
             {topicData.citizen.explanation}
           </Text>
@@ -30,7 +30,7 @@ function Result() {
 
         <Box p={4} borderWidth="1px" borderRadius="lg" w="400px">
           <Text fontWeight="bold">ウルフのお題:</Text>
-          <Text>{topicData.werewlof.word}</Text>
+          <Text>{topicData.werewlof.word}（{topicData.werewlof.english}）</Text>
           <Text fontSize="sm" color="gray.600">
             {topicData.werewlof.explanation}
           </Text>

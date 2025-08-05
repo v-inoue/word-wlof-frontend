@@ -23,7 +23,7 @@ function Home() {
   const [minLevel, setMinLevel] = useState<number>(1)
   const [maxLevel, setMaxLevel] = useState<number>(5)
   const marks = [
-    { value: 1, label: "超初級" },
+    { value: 1, label: "入門" },
     { value: 2, label: "初級" },
     { value: 3, label: "中級" },
     { value: 4, label: "上級" },
